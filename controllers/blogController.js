@@ -1,3 +1,4 @@
+const sequelize = require('../config/db');
 const blog = require('../models/blogModel');
 
 // Create a new blog
@@ -24,14 +25,10 @@ exports.createBlog = async (req, res) => {
   }
 };
 
-// Fetch all blogs
+// get all blogs
 exports.getAllBlogs = async (req, res) => {
   try {
-    const blogs = await blog.findAll({
-      where: {
-        category: 'garments'
-      }
-    });
+    const blogs = await blog.findAll();
     res.send({status: true, data: blogs});
   } catch (error) {
     console.error(error);
@@ -77,5 +74,39 @@ exports.deleteBlog = async(req, res) => {
   catch(error){
     console.log(error);
     res.send({status: false, message: 'Failed to delete'})
+  }
+};
+
+
+exports.tableBlogs = async(req, res) => {
+  try{
+    const blogs = await blog.findAll({
+      order: [
+        [sequelize.fn('CHAR_LENGTH', sequelize.col('longDescription')), 'DESC']
+      ]
+    });
+
+    res.send({ status: true, data: blogs });
+  }
+  catch(error){
+    console.log(error),
+    res.send({status: false, message: 'Failed to load'})
+  }
+};
+
+// pagination blogs
+exports.getPaginationBlogs = async(req, res) => {
+  const {page, limit} = req.query;
+  try{
+    const offset = (page - 1) * limit;
+    const { rows: blogs, count: totalBlogs } = await blog.findAndCountAll({
+      offset: parseInt(offset),
+      limit: parseInt(limit),
+    });
+    res.send({status: true, data: blogs, totalBlogs})
+  }
+  catch(error){
+    console.log(error);
+    res.send({status: false, message: 'Failed to load'})
   }
 };
