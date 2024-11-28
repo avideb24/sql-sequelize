@@ -29,7 +29,10 @@ const User = sequelize.define('User',
         },
         address: {
             type: DataTypes.JSON,
-        }
+        },
+        phoneNumber: {
+            type: DataTypes.INTEGER,
+        },
     }
 );
 

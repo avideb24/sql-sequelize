@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "root",
+    "password": "root555",
+    "database": "bucketbee",
+    "host": "localhost",
+    "dialect": "mysql"
+  }
+}
